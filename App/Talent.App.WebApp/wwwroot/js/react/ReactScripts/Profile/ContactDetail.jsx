@@ -10,6 +10,7 @@ export class IndividualDetailSection extends Component {
             Object.assign({}, props.details)
             : {
                 firstName: "",
+                middleName: "",
                 lastName: "",
                 email: "",
                 phone: ""
@@ -54,7 +55,7 @@ export class IndividualDetailSection extends Component {
         console.log(this.props.componentId)
         console.log(this.state.newContact)
         const data = Object.assign({}, this.state.newContact)
-        this.props.controlFunc(this.props.componentId, data)
+        this.props.controlFunc('', data)
         this.closeEdit()
     }
 
@@ -76,6 +77,16 @@ export class IndividualDetailSection extends Component {
                     maxLength={80}
                     placeholder="Enter your first name"
                     errorMessage="Please enter a valid first name"
+                />
+                <ChildSingleInput
+                    inputType="text"
+                    label="Middle Name"
+                    name="middleName"
+                    value={this.state.newContact.middleName}
+                    controlFunc={this.handleChange}
+                    maxLength={80}
+                    placeholder="Enter your middle name"
+                    errorMessage="Please enter a valid middle name"
                 />
                 <ChildSingleInput
                     inputType="text"
@@ -116,8 +127,10 @@ export class IndividualDetailSection extends Component {
     }
 
     renderDisplay() {
-
-        let fullName = this.props.details ? `${this.props.details.firstName} ${this.props.details.lastName}` : ""
+        let firstName = this.props.details.firstName ? this.props.details.firstName : '';
+        let middleName = this.props.details.middleName ? this.props.details.middleName : '';
+        let lastName = this.props.details.lastName ? this.props.details.lastName : '';
+        let fullName = this.props.details ? `${firstName} ${middleName} ${lastName}` : ""
         let email = this.props.details ? this.props.details.email : ""
         let phone = this.props.details ? this.props.details.phone : ""
 

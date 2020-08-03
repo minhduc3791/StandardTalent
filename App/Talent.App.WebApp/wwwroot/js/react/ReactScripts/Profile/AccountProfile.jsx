@@ -76,7 +76,6 @@ export default class AccountProfile extends React.Component {
             },
             type: "GET",
             success: function (res) {
-                console.log(res);
                 this.updateWithoutSave(res.data)
             }.bind(this)
         })
@@ -91,8 +90,9 @@ export default class AccountProfile extends React.Component {
     }
 
     //updates component's state and saves data
-    updateAndSaveData(propertyName, newValues) {
-        let newProfile = Object.assign({}, this.state.profileData, { [propertyName]: newValues });
+    updateAndSaveData(propertyName = "", newValues) {
+        const updateData = propertyName === "" ? newValues : { [propertyName]: newValues }
+        let newProfile = Object.assign({}, this.state.profileData, updateData);
         this.setState({
             profileData: newProfile
         }, this.saveProfile)
@@ -133,6 +133,7 @@ export default class AccountProfile extends React.Component {
     render() {
         const profile = {
             firstName: this.state.profileData.firstName,
+            middleName: this.state.profileData.middleName,
             lastName: this.state.profileData.lastName,
             email: this.state.profileData.email,
             phone: this.state.profileData.phone
@@ -155,12 +156,13 @@ export default class AccountProfile extends React.Component {
                                                 saveProfileData={this.updateAndSaveData}
                                             />
                                         </FormItemWrapper>
+                                        
                                         <FormItemWrapper
                                             title='User Details'
                                             tooltip='Enter your contact details'
                                         >
                                             <IndividualDetailSection
-                                                controlFunc={this.updateForComponentId}
+                                                controlFunc={this.updateAndSaveData}
                                                 details={profile}
                                                 componentId='contactDetails'
                                             />
@@ -288,7 +290,7 @@ export default class AccountProfile extends React.Component {
                                             description={this.state.profileData.description}
                                             updateProfileData={this.updateAndSaveData}
                                             updateWithoutSave={this.updateWithoutSave}
-                                        />
+                                            />
                                     </div>
                                 </form>
                             </div >
