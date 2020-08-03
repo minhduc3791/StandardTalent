@@ -52,13 +52,69 @@ namespace Talent.Services.Profile.Domain.Services
         public async Task<TalentProfileViewModel> GetTalentProfile(string Id)
         {
             //Your code here;
-            throw new NotImplementedException();
+            User user = await _userRepository.GetByIdAsync(Id);
+            TalentProfileViewModel talent = new TalentProfileViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                Gender = user.Gender,
+                Email = user.Email,
+                Phone = user.Phone,
+                MobilePhone = user.MobilePhone,
+                IsMobilePhoneVerified = user.IsMobilePhoneVerified,
+                Address = user.Address,
+                Nationality = user.Nationality,
+                VisaStatus = user.VisaStatus,
+                VisaExpiryDate = user.VisaExpiryDate,
+                VideoName = user.VideoName,
+                VideoUrl = "",
+                CvName = user.CvName,
+                CvUrl = "",
+                Summary = user.Summary,
+                Description = user.Description,
+                LinkedAccounts = user.LinkedAccounts,
+                JobSeekingStatus = user.JobSeekingStatus,
+                //Languages = user.Languages, // need for loop
+                //Skills = user.Skills,
+                //Education = user.Education,
+                //Certifications = user.Certifications,
+                //Experience = user.Experience,
+            };
+            return talent;
         }
 
         public async Task<bool> UpdateTalentProfile(TalentProfileViewModel model, string updaterId)
         {
-            //Your code here;
-            throw new NotImplementedException();
+            User user = await _userRepository.GetByIdAsync(model.Id);
+            user.FirstName = model.FirstName;
+            user.MiddleName = model.MiddleName;
+            user.LastName = model.LastName;
+            user.Gender = model.Gender;
+            user.Email = model.Email;
+            user.Phone = model.Phone;
+            user.MobilePhone = model.MobilePhone;
+            user.IsMobilePhoneVerified = model.IsMobilePhoneVerified;
+            user.Address = model.Address;
+            user.Nationality = model.Nationality;
+            user.VisaExpiryDate = model.VisaExpiryDate;
+            user.VideoName = model.VideoName;
+            //VideoUrl = "", //additional here
+            user.CvName = model.CvName;
+            //CvUrl = "",
+            user.Summary = model.Summary;
+            user.Description = model.Description;
+            user.LinkedAccounts = model.LinkedAccounts;
+            user.JobSeekingStatus = model.JobSeekingStatus;
+            //Languages = user.Languages, need for loop
+            //Skills = user.Skills,
+            //Education = user.Education,
+            //Certifications = user.Certifications,
+            //Experience = user.Experience,
+
+            await _userRepository.Update(user);
+            return true;
         }
 
         public async Task<EmployerProfileViewModel> GetEmployerProfile(string Id, string role)

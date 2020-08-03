@@ -76,6 +76,7 @@ export default class AccountProfile extends React.Component {
             },
             type: "GET",
             success: function (res) {
+                console.log(res);
                 this.updateWithoutSave(res.data)
             }.bind(this)
         })
@@ -86,22 +87,23 @@ export default class AccountProfile extends React.Component {
         let newProfile = Object.assign({}, this.state.profileData, newValues)
         this.setState({
             profileData: newProfile
-        })
+        }, () => { console.log('loaded: ', this.state.profileData) })
     }
 
     //updates component's state and saves data
-    updateAndSaveData(newValues) {
-        let newProfile = Object.assign({}, this.state.profileData, newValues)
+    updateAndSaveData(propertyName, newValues) {
+        let newProfile = Object.assign({}, this.state.profileData, { [propertyName]: newValues });
         this.setState({
             profileData: newProfile
         }, this.saveProfile)
     }
 
-    updateForComponentId(componentId, newValues) {
+    updateForComponentId(newValues) {
         this.updateAndSaveData(newValues)
     }
 
     saveProfile() {
+        console.log(this.state.profileData);
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
             url: 'http://localhost:60290/profile/profile/updateTalentProfile',

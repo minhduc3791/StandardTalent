@@ -13,6 +13,8 @@ export default class Language extends React.Component {
 
     render() {
 
-        
+        return (
+            <h1>language</h1>
+        )
     }
 }

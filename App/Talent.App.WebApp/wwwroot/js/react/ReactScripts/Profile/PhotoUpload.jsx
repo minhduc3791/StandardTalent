@@ -14,7 +14,9 @@ export default class PhotoUpload extends Component {
     
 
     render() {
-
+        return (
+            <h1>photo upload</h1>
+        )
         
     }
 }
