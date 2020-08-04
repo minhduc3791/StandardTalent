@@ -1461,3 +1461,16 @@ div.ReactTags__selected a.ReactTags__remove {
     margin-bottom: 10px;
 }
 /*Manage jobs - End*/
+
+/*Language - Begin*/
+.add-language-header {
+    margin-top: 5px !important;
+    margin-bottom: 10px !important;
+}
+.add-language-dropdown {
+    margin-right: 10px !important;
+}
+.add-language-button {
+    margin-right: 10px !important;
+}
+/*Language - End*/

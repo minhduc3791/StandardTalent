@@ -76,12 +76,27 @@ namespace Talent.Services.Profile.Domain.Services
                 Description = user.Description,
                 LinkedAccounts = user.LinkedAccounts,
                 JobSeekingStatus = user.JobSeekingStatus,
-                //Languages = user.Languages, // need for loop
+                
                 //Skills = user.Skills,
                 //Education = user.Education,
                 //Certifications = user.Certifications,
                 //Experience = user.Experience,
             };
+
+            talent.Languages = new List<AddLanguageViewModel>();
+            user.Languages.ForEach(language =>
+            {
+                if (language.IsDeleted == false)
+                {
+                    talent.Languages.Add(new AddLanguageViewModel
+                    {
+                        Id = language.Id,
+                        Name = language.Language,
+                        Level = language.LanguageLevel,
+                        CurrentUserId = user.Id,
+                    });
+                }
+            });
             return talent;
         }
 
@@ -107,6 +122,56 @@ namespace Talent.Services.Profile.Domain.Services
             user.Description = model.Description;
             user.LinkedAccounts = model.LinkedAccounts;
             user.JobSeekingStatus = model.JobSeekingStatus;
+            var newLanguages = new List<UserLanguage>();
+
+            model.Languages.ForEach(mLanguage => {
+                UserLanguage language = null;
+                if (mLanguage.Id == null)
+                {
+                    language = new UserLanguage
+                    {
+                        Id = ObjectId.GenerateNewId().ToString(),
+                        IsDeleted = false
+                    };
+                }
+                else
+                {
+                    language = user.Languages.SingleOrDefault(x => x.Id == mLanguage.Id);
+                    if (language == null)
+                    {
+                        language = new UserLanguage
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            IsDeleted = false
+                        };
+                    }
+                }
+
+                language.UserId = user.Id;
+                language.Language = mLanguage.Name;
+                language.LanguageLevel = mLanguage.Level;
+                newLanguages.Add(language);
+            });
+
+            user.Languages.ForEach(uLanguage => {
+                if (uLanguage.IsDeleted == false)
+                {
+                    bool deleted = true;
+                    model.Languages.ForEach(mLanguage =>
+                    {
+                        if (mLanguage.Id != null && uLanguage.Id.Equals(mLanguage.Id))
+                            deleted = false;
+                    });
+                    if (deleted == true)
+                    {
+                        uLanguage.IsDeleted = true;
+                        newLanguages.Add(uLanguage);
+                    }
+                }
+            });
+
+            user.Languages = newLanguages;
+
             //Languages = user.Languages, need for loop
             //Skills = user.Skills,
             //Education = user.Education,
