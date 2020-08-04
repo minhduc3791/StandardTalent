@@ -76,6 +76,7 @@ export default class Language extends React.Component {
     }
 
     addLanguage() {
+        this.toggleAddLanguage();
         const index = this.props.languageData.length;
         this.updateLanguage({ name: "id", value: index });
         this.props.updateProfileData('languages', [...this.props.languageData, { id: index, name: this.state.newLanguage.name, level: this.state.newLanguage.level }])
@@ -114,8 +115,9 @@ export default class Language extends React.Component {
         this.props.updateProfileData('languages', data);
     }
 
-    deleteLanguage() {
-
+    deleteLanguage(id) {
+        const data = [...this.props.languageData].filter(d => d.id !== id);
+        this.props.updateProfileData('languages', data);
     }
 
     render() {
@@ -190,7 +192,7 @@ export default class Language extends React.Component {
                                             {!this.state.showEditLanguage &&
                                                 <Grid.Column width={3} floated="right">
                                                 <Icon onClick={() => this.initEditLanguage({id, level, name})} name="pencil" />
-                                                    <Icon onClick={this.deleteLanguage} name="delete" />
+                                                    <Icon onClick={() => this.deleteLanguage(id)} name="delete" />
                                                 </Grid.Column>
                                             }
                                         </Grid>

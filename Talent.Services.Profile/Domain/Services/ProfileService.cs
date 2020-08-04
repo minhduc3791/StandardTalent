@@ -76,8 +76,6 @@ namespace Talent.Services.Profile.Domain.Services
                 Description = user.Description,
                 LinkedAccounts = user.LinkedAccounts,
                 JobSeekingStatus = user.JobSeekingStatus,
-                
-                //Skills = user.Skills,
                 //Education = user.Education,
                 //Certifications = user.Certifications,
                 //Experience = user.Experience,
@@ -97,6 +95,21 @@ namespace Talent.Services.Profile.Domain.Services
                     });
                 }
             });
+
+            talent.Skills = new List<AddSkillViewModel>();
+            user.Skills.ForEach(skill =>
+            {
+                if (skill.IsDeleted == false)
+                {
+                    talent.Skills.Add(new AddSkillViewModel
+                    {
+                        Id = skill.Id,
+                        Name = skill.Skill,
+                        Level = skill.ExperienceLevel,
+                    });
+                }
+            });
+
             return talent;
         }
 
@@ -122,7 +135,9 @@ namespace Talent.Services.Profile.Domain.Services
             user.Description = model.Description;
             user.LinkedAccounts = model.LinkedAccounts;
             user.JobSeekingStatus = model.JobSeekingStatus;
+
             var newLanguages = new List<UserLanguage>();
+            var newSkills = new List<UserSkill>();
 
             model.Languages.ForEach(mLanguage => {
                 UserLanguage language = null;
@@ -170,7 +185,54 @@ namespace Talent.Services.Profile.Domain.Services
                 }
             });
 
+            model.Skills.ForEach(mSkill => {
+                UserSkill skill = null;
+                if (mSkill.Id == null)
+                {
+                    skill = new UserSkill
+                    {
+                        Id = ObjectId.GenerateNewId().ToString(),
+                        IsDeleted = false
+                    };
+                }
+                else
+                {
+                    skill = user.Skills.SingleOrDefault(x => x.Id == mSkill.Id);
+                    if (skill == null)
+                    {
+                        skill = new UserSkill
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            IsDeleted = false
+                        };
+                    }
+                }
+
+                skill.UserId = user.Id;
+                skill.Skill = mSkill.Name;
+                skill.ExperienceLevel = mSkill.Level;
+                newSkills.Add(skill);
+            });
+
+            user.Skills.ForEach(uSkill => {
+                if (uSkill.IsDeleted == false)
+                {
+                    bool deleted = true;
+                    model.Skills.ForEach(mSkill =>
+                    {
+                        if (mSkill.Id != null && uSkill.Id.Equals(mSkill.Id))
+                            deleted = false;
+                    });
+                    if (deleted == true)
+                    {
+                        uSkill.IsDeleted = true;
+                        newSkills.Add(uSkill);
+                    }
+                }
+            });
+
             user.Languages = newLanguages;
+            user.Skills = newSkills;
 
             //Languages = user.Languages, need for loop
             //Skills = user.Skills,
