@@ -1474,3 +1474,12 @@ div.ReactTags__selected a.ReactTags__remove {
     margin-right: 10px !important;
 }
 /*Language - End*/
+
+/*Experience - Begin*/
+.full-width,
+.full-width > div.react-datepicker-wrapper,
+.full-width > div > div.react-datepicker__input-container
+.full-width > div > div.react-datepicker__input-container input {
+    width: 100%;
+}
+/*Experience - End*/

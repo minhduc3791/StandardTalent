@@ -91,6 +91,7 @@ export default class AccountProfile extends React.Component {
 
     //updates component's state and saves data
     updateAndSaveData(propertyName = "", newValues) {
+        console.log(propertyName, newValues);
         const updateData = propertyName === "" ? newValues : { [propertyName]: newValues }
         let newProfile = Object.assign({}, this.state.profileData, updateData);
         this.setState({
@@ -259,7 +260,7 @@ export default class AccountProfile extends React.Component {
                                             <PhotoUpload
                                                 imageId={this.state.profileData.profilePhotoUrl}
                                                 updateProfileData={this.updateWithoutSave}
-                                                savePhotoUrl='http://localhost:60290/profile/profile/updateProfilePhoto'
+                                                savePhotoUrl='http://localhost:60290/profile/profile/updateTalentPhoto'
                                             />
                                         </FormItemWrapper>
                                         <FormItemWrapper

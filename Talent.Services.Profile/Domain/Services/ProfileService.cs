@@ -110,6 +110,23 @@ namespace Talent.Services.Profile.Domain.Services
                 }
             });
 
+            talent.Experience = new List<ExperienceViewModel>();
+            user.Experience.ForEach(exp =>
+            {
+                if (exp.IsDeleted == false)
+                {
+                    talent.Experience.Add(new ExperienceViewModel
+                    {
+                        Id = exp.Id,
+                        Company = exp.Company,
+                        Position = exp.Position,
+                        Responsibilities = exp.Responsibilities,
+                        Start = exp.Start,
+                        End = exp.End,
+                    });
+                }
+            });
+
             return talent;
         }
 
@@ -138,6 +155,7 @@ namespace Talent.Services.Profile.Domain.Services
 
             var newLanguages = new List<UserLanguage>();
             var newSkills = new List<UserSkill>();
+            var newExperiences = new List<UserExperience>();
 
             model.Languages.ForEach(mLanguage => {
                 UserLanguage language = null;
@@ -231,8 +249,62 @@ namespace Talent.Services.Profile.Domain.Services
                 }
             });
 
+            model.Experience.ForEach(mExp => {
+                UserExperience exp = null;
+                if (mExp.Id == null)
+                {
+                    exp = new UserExperience
+                    {
+                        Id = ObjectId.GenerateNewId().ToString(),
+                        Company = mExp.Company,
+                        Position = mExp.Position,
+                        Responsibilities = mExp.Responsibilities,
+                        Start = mExp.Start,
+                        End = mExp.End,
+                        IsDeleted = false,
+                    };
+                }
+                else
+                {
+                    exp = user.Experience.SingleOrDefault(x => x.Id == mExp.Id);
+                    if (exp == null)
+                    {
+                        exp = new UserExperience
+                        {
+                            Id = ObjectId.GenerateNewId().ToString(),
+                            Company = mExp.Company,
+                            Position = mExp.Position,
+                            Responsibilities = mExp.Responsibilities,
+                            Start = mExp.Start,
+                            End = mExp.End,
+                            IsDeleted = false,
+                        };
+                    }
+                }
+
+                newExperiences.Add(exp);
+            });
+
+            user.Experience.ForEach(uExp => {
+                if (uExp.IsDeleted == false)
+                {
+                    bool deleted = true;
+                    model.Experience.ForEach(mExp =>
+                    {
+                        if (mExp.Id != null && uExp.Id.Equals(mExp.Id))
+                            deleted = false;
+                    });
+                    if (deleted == true)
+                    {
+                        uExp.IsDeleted = true;
+                        newExperiences.Add(uExp);
+                    }
+                }
+            });
+
             user.Languages = newLanguages;
             user.Skills = newSkills;
+            user.Experience = newExperiences;
 
             //Languages = user.Languages, need for loop
             //Skills = user.Skills,
@@ -409,10 +481,43 @@ namespace Talent.Services.Profile.Domain.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateTalentPhoto(string talentId, IFormFile file)
+        public async Task<bool> UpdateTalentPhoto(IFormFile file, string talentId)
         {
             //Your code here;
-            throw new NotImplementedException();
+            var fileExtension = Path.GetExtension(file.FileName);
+            List<string> acceptedExtensions = new List<string> { ".jpg", ".png", ".gif", ".jpeg" };
+
+            if (fileExtension != null && !acceptedExtensions.Contains(fileExtension.ToLower()))
+            {
+                return false;
+            }
+
+            var profile = (await _userRepository.Get(x => x.Id == talentId)).SingleOrDefault();
+
+            if (profile == null)
+            {
+                return false;
+            }
+
+            var newFileName = await _fileService.SaveFile(file, FileType.ProfilePhoto);
+
+            if (!string.IsNullOrWhiteSpace(newFileName))
+            {
+                var oldFileName = profile.ProfilePhoto;
+
+                if (!string.IsNullOrWhiteSpace(oldFileName))
+                {
+                    await _fileService.DeleteFile(oldFileName, FileType.ProfilePhoto);
+                }
+
+                profile.ProfilePhoto = newFileName;
+                profile.ProfilePhotoUrl = await _fileService.GetFileURL(newFileName, FileType.ProfilePhoto);
+
+                await _userRepository.Update(profile);
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> AddTalentVideo(string talentId, IFormFile file)
