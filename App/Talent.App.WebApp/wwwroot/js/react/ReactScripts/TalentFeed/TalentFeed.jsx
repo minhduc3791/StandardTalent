@@ -11,8 +11,9 @@ export default class TalentFeed extends React.Component {
     constructor(props) {
         super(props);
 
-        let loader = loaderData
-        loader.allowedUsers.push("Talent")
+        let loader = loaderData;
+        loader.allowedUsers.push("Employer");
+        loader.allowedUsers.push("Recruiter");
 
         this.state = {
             loadNumber: 5,

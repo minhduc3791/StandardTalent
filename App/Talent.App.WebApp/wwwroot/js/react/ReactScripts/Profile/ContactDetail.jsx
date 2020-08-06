@@ -127,12 +127,13 @@ export class IndividualDetailSection extends Component {
     }
 
     renderDisplay() {
-        let firstName = this.props.details.firstName ? this.props.details.firstName : '';
-        let middleName = this.props.details.middleName ? this.props.details.middleName : '';
-        let lastName = this.props.details.lastName ? this.props.details.lastName : '';
-        let fullName = this.props.details ? `${firstName} ${middleName} ${lastName}` : ""
-        let email = this.props.details ? this.props.details.email : ""
-        let phone = this.props.details ? this.props.details.phone : ""
+        const { details } = this.props;
+        let firstName = (details && details.firstName) ? details.firstName : '';
+        let middleName = (details && details.middleName) ? details.middleName : '';
+        let lastName = (details && details.lastName) ? details.lastName : '';
+        let fullName = details ? `${firstName} ${middleName} ${lastName}` : ""
+        let email = details ? details.email : ""
+        let phone = details ? details.phone : ""
 
         return (
             <div className='row'>

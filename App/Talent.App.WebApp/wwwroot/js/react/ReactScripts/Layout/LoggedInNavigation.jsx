@@ -62,11 +62,6 @@ export class LoggedInNavigation extends React.Component {
                 href: "/EmployerFeed",
                 type: "link"
             },
-            {
-                label: "View Talent Feed",
-                href: "/Feed",
-                type: "link"
-            },
             {   //makes sure that the talent navigation menu is the same height as the recruiter/employer menu
                 type: "placeholder",
                 label: "1",
