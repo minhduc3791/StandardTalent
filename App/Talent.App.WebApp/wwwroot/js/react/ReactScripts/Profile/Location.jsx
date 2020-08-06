@@ -207,7 +207,6 @@ export class Nationality extends React.Component {
     }
 
     saveNationality(e, { value }) {
-        console.log(value)
         this.props.saveProfileData('nationality', value)
     }
 

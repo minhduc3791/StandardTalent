@@ -12,8 +12,7 @@ export default class TalentFeed extends React.Component {
         super(props);
 
         let loader = loaderData
-        loader.allowedUsers.push("Employer")
-        loader.allowedUsers.push("Recruiter")
+        loader.allowedUsers.push("Talent")
 
         this.state = {
             loadNumber: 5,

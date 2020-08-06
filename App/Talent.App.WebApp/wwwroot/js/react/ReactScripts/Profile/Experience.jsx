@@ -107,18 +107,17 @@ export default class Experience extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row width={8}>
-                            <Grid.Column width={8}>
+                            <Grid.Column width={8} className="full-width">
                                 <h5>Start Date: </h5>
                                 <DatePicker
-                                    className="full-width"
                                     selected={this.state.newExperience.start}
                                     onChange={(date) => this.handleChangeNameValue('newExperience.start', date)}
                                 />
                             </Grid.Column>
-                            <Grid.Column width={8}>
+                            <Grid.Column width={8} className="full-width">
                                 <h5>End Date: </h5>
                                 <DatePicker
-                                    className="full-width"
+                                    
                                     selected={this.state.newExperience.end}
                                 onChange={(date) => this.handleChangeNameValue('newExperience.end', date)}
                                 />
@@ -183,18 +182,16 @@ export default class Experience extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row width={8}>
-                                            <Grid.Column width={8}>
+                                            <Grid.Column width={8} className="full-width">
                                                 <h5>Start Date: </h5>
                                                 <DatePicker
-                                                    className="full-width"
                                                     selected={this.state.editExperience.start}
                                                     onChange={(date) => this.handleChangeNameValue('editExperience.start', date)}
                                                 />
                                             </Grid.Column>
-                                            <Grid.Column width={8}>
+                                            <Grid.Column width={8} className="full-width">
                                                 <h5>End Date: </h5>
                                                 <DatePicker
-                                                    className="full-width"
                                                     selected={this.state.editExperience.end}
                                                     onChange={(date) => this.handleChangeNameValue('editExperience.end', date)}
                                                 />

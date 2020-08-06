@@ -27,7 +27,7 @@ export default class PhotoUpload extends Component {
             type: "POST",
             data: formData,
             processData: false,
-            //contentType: false,
+            contentType: false,
             success: function (res) {
                 console.log(res)
             }.bind(this),
@@ -50,18 +50,20 @@ export default class PhotoUpload extends Component {
     render() {
         return (
             <div>
-                <Image src={this.state.filePath} size='small' circular bordered />
-                <Icon onClick={() => this.fileInputRef.current.click()} name="camera retro" size="huge" circular />
+                {this.state.filePath.length > 0 && <Image src={this.state.filePath} size='small' circular bordered />}
+                {this.state.filePath === "" && <Icon onClick={() => this.fileInputRef.current.click()} name="camera retro" size="huge" circular />}
                 <input
                     ref={this.fileInputRef}
                     type="file"
                     hidden
                     onChange={this.fileChange}
                 />
-                <Button type="button" onClick={this.uploadFile}>
-                    <Icon name="upload"/>
-                    Upload
-                </Button>
+                {this.state.filePath.length > 0 &&
+                    <Button type="button" secondary onClick={this.uploadFile} style={{margin: '20px'}}>
+                        <Icon name="upload" />
+                        Upload
+                    </Button>
+                }
             </div>
         )
     }

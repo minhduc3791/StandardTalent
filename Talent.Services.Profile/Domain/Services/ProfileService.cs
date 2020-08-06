@@ -143,6 +143,7 @@ namespace Talent.Services.Profile.Domain.Services
             user.IsMobilePhoneVerified = model.IsMobilePhoneVerified;
             user.Address = model.Address;
             user.Nationality = model.Nationality;
+            user.VisaStatus = model.VisaStatus;
             user.VisaExpiryDate = model.VisaExpiryDate;
             user.VideoName = model.VideoName;
             //VideoUrl = "", //additional here
