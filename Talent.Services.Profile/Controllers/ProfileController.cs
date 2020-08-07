@@ -243,11 +243,39 @@ namespace Talent.Services.Profile.Controllers
         public async Task<ActionResult> UpdateProfilePhoto()
         {
             //Your code here;
-            IFormFile file = Request.Form.Files[0];
-            //String talentId = String.IsNullOrWhiteSpace(id) ? _userAppContext.CurrentUserId : id;
-            //var userId = _userAppContext.CurrentUserId;
-            //var result = await _profileService.UpdateTalentPhoto(file, talentId);
-            return Json(new { Result = "123" });
+            try
+            {
+                IFormFile imageFile = Request.Form.Files[0];
+                string talentId = _userAppContext.CurrentUserId;
+
+                if (string.IsNullOrWhiteSpace(_environment.WebRootPath))
+                {
+                    _environment.WebRootPath = Directory.GetCurrentDirectory();
+                }
+                if (!Directory.Exists(_environment.WebRootPath + _profileImageFolder))
+                {
+                    Directory.CreateDirectory(_environment.WebRootPath + _profileImageFolder);
+                }
+
+                if (imageFile != null)
+                {
+                    string UploadFolder = Path.Combine(_environment.WebRootPath + _profileImageFolder);
+                    string fileName = talentId + '_' + imageFile.FileName;
+                    string UploadFilePath = Path.Combine(UploadFolder + fileName);
+                    string imagePath = "/images/" + fileName;
+                    imageFile.CopyTo(new FileStream(UploadFilePath, FileMode.Create));
+                    //var filePath = _profileService.UpdateTalentPhoto(talentId, imageFile);
+                    //if (filePath!=null)
+
+                    return Json(new { profilePath = imagePath });
+
+                }
+                return Json(new { profilePath = false });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = true, errorMst = ex.Message.ToString() });
+            }
         }
 
         [HttpPost("updateTalentCV")]

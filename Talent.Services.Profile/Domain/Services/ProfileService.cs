@@ -76,10 +76,11 @@ namespace Talent.Services.Profile.Domain.Services
                 Description = user.Description,
                 LinkedAccounts = user.LinkedAccounts,
                 JobSeekingStatus = user.JobSeekingStatus,
-                //Education = user.Education,
-                //Certifications = user.Certifications,
-                //Experience = user.Experience,
-            };
+                ProfilePhotoUrl = user.ProfilePhotoUrl,
+            //Education = user.Education,
+            //Certifications = user.Certifications,
+            //Experience = user.Experience,
+        };
 
             talent.Languages = new List<AddLanguageViewModel>();
             user.Languages.ForEach(language =>
@@ -146,6 +147,7 @@ namespace Talent.Services.Profile.Domain.Services
             user.VisaStatus = model.VisaStatus;
             user.VisaExpiryDate = model.VisaExpiryDate;
             user.VideoName = model.VideoName;
+            user.ProfilePhotoUrl = model.ProfilePhotoUrl;
             //VideoUrl = "", //additional here
             user.CvName = model.CvName;
             //CvUrl = "",
@@ -549,7 +551,34 @@ namespace Talent.Services.Profile.Domain.Services
         public async Task<IEnumerable<TalentSnapshotViewModel>> GetTalentSnapshotList(string employerOrJobId, bool forJob, int position, int increment)
         {
             //Your code here;
-            throw new NotImplementedException();
+            List<User> users = _userRepository.GetQueryable().ToList();
+            List < TalentSnapshotViewModel > result = new List<TalentSnapshotViewModel>();
+
+            users.ForEach(user =>
+            {
+                TalentSnapshotViewModel snapshot = new TalentSnapshotViewModel
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Name = $"{user.FirstName} {user.MiddleName} {user.LastName}",
+                    PhotoId = user.ProfilePhotoUrl,
+                    VideoUrl = user.VideoName,
+                    CVUrl = user.CvName,
+                    Summary = user.Summary,
+                    CurrentEmployment = "",
+                    Visa = user.VisaStatus,
+                    Level = "",
+                    Skills = new List<string>()
+                };
+
+                user.Skills.ForEach(skill =>
+                {
+                    snapshot.Skills.Add(skill.Skill);
+                });
+
+                result.Add(snapshot);
+            });
+
+            return result;
         }
 
         public async Task<IEnumerable<TalentSnapshotViewModel>> GetTalentSnapshotList(IEnumerable<string> ids)

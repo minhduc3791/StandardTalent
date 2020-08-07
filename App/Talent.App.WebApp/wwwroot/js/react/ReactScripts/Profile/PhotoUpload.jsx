@@ -15,6 +15,12 @@ export default class PhotoUpload extends Component {
         this.uploadFile = this.uploadFile.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.imageId !== this.props.imageId) {
+            this.setState({ filePath: this.props.imageId });
+        }
+    }
+
     uploadFile() {
         var cookies = Cookies.get('talentAuthToken');
         var formData = new FormData();
@@ -28,8 +34,9 @@ export default class PhotoUpload extends Component {
             data: formData,
             processData: false,
             contentType: false,
+            cache: false,
             success: function (res) {
-                console.log(res)
+                this.props.updateProfileData('profilePhotoUrl', res.profilePath);
             }.bind(this),
             error: function (res, a, b) {
                 console.log(res)
