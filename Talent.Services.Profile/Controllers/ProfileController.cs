@@ -252,20 +252,23 @@ namespace Talent.Services.Profile.Controllers
                 {
                     _environment.WebRootPath = Directory.GetCurrentDirectory();
                 }
-                if (!Directory.Exists(_environment.WebRootPath + _profileImageFolder))
+
+                string fullFilePath = Path.Combine(_environment.WebRootPath, _profileImageFolder);
+
+                if (!Directory.Exists(fullFilePath))
                 {
-                    Directory.CreateDirectory(_environment.WebRootPath + _profileImageFolder);
+                    Directory.CreateDirectory(fullFilePath);
                 }
 
                 if (imageFile != null)
                 {
-                    string UploadFolder = Path.Combine(_environment.WebRootPath + _profileImageFolder);
                     string fileName = talentId + '_' + imageFile.FileName;
-                    string UploadFilePath = Path.Combine(UploadFolder + fileName);
+                    string UploadFilePath = Path.Combine(fullFilePath, fileName);
                     string imagePath = "/images/" + fileName;
-                    imageFile.CopyTo(new FileStream(UploadFilePath, FileMode.Create));
-                    //var filePath = _profileService.UpdateTalentPhoto(talentId, imageFile);
-                    //if (filePath!=null)
+                    if (!System.IO.File.Exists(UploadFilePath))
+                    {
+                        imageFile.CopyTo(new FileStream(UploadFilePath, FileMode.Create));
+                    }
 
                     return Json(new { profilePath = imagePath });
 

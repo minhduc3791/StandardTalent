@@ -16,8 +16,10 @@ export default class PhotoUpload extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.imageId !== this.props.imageId) {
-            this.setState({ filePath: this.props.imageId });
+        if (this.props.imageId !== null && prevProps.imageId !== this.props.imageId) {
+            this.setState({
+                filePath: 'http://localhost:60290' + this.props.imageId
+            });
         }
     }
 
@@ -55,10 +57,11 @@ export default class PhotoUpload extends Component {
     }
 
     render() {
+        const { filePath } = this.state;
         return (
             <div>
-                {this.state.filePath.length > 0 && <Image src={this.state.filePath} size='small' circular bordered />}
-                {this.state.filePath === "" && <Icon onClick={() => this.fileInputRef.current.click()} name="camera retro" size="huge" circular />}
+                {(filePath && filePath.length > 0) && <Image onClick={() => this.fileInputRef.current.click()} src={filePath} size='small' circular bordered />}
+                {(!filePath || filePath === "") && <Icon onClick={() => this.fileInputRef.current.click()} name="camera retro" size="huge" circular />}
                 <input
                     ref={this.fileInputRef}
                     type="file"

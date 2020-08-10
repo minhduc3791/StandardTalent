@@ -80,7 +80,7 @@ namespace Talent.Services.Profile.Domain.Services
             //Education = user.Education,
             //Certifications = user.Certifications,
             //Experience = user.Experience,
-        };
+            };
 
             talent.Languages = new List<AddLanguageViewModel>();
             user.Languages.ForEach(language =>
