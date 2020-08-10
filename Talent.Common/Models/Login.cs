@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Talent.Common.Models
 {
+    [BsonIgnoreExtraElements]
     public class Login : IMongoCommon
     {
         public Guid UId { get; set; }
@@ -33,6 +34,5 @@ namespace Talent.Common.Models
         public DateTime? ExpiredOn { get; set; }
         public string ResetPasswordToken { get; set; }
         public DateTime? ResetPasswordTokenExpiryDate { get; set; }
-
     }
 }

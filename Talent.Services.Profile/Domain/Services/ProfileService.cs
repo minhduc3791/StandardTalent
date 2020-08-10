@@ -87,13 +87,7 @@ namespace Talent.Services.Profile.Domain.Services
             {
                 if (language.IsDeleted == false)
                 {
-                    talent.Languages.Add(new AddLanguageViewModel
-                    {
-                        Id = language.Id,
-                        Name = language.Language,
-                        Level = language.LanguageLevel,
-                        CurrentUserId = user.Id,
-                    });
+                    talent.Languages.Add(ViewModelFromLanguage(language));
                 }
             });
 
@@ -102,12 +96,7 @@ namespace Talent.Services.Profile.Domain.Services
             {
                 if (skill.IsDeleted == false)
                 {
-                    talent.Skills.Add(new AddSkillViewModel
-                    {
-                        Id = skill.Id,
-                        Name = skill.Skill,
-                        Level = skill.ExperienceLevel,
-                    });
+                    talent.Skills.Add(ViewModelFromSkill(skill));
                 }
             });
 
@@ -551,34 +540,28 @@ namespace Talent.Services.Profile.Domain.Services
         public async Task<IEnumerable<TalentSnapshotViewModel>> GetTalentSnapshotList(string employerOrJobId, bool forJob, int position, int increment)
         {
             //Your code here;
-            List<User> users = _userRepository.GetQueryable().ToList();
-            List < TalentSnapshotViewModel > result = new List<TalentSnapshotViewModel>();
+            var users = (await _userRepository.Get(x => x.IsDeleted == false && !String.IsNullOrEmpty(x.UserType) && x.UserType.Equals("Talent")))
+                .Skip(position).Take(increment).ToList();
 
-            users.ForEach(user =>
+            if (users != null)
             {
-                TalentSnapshotViewModel snapshot = new TalentSnapshotViewModel
+                IEnumerable<TalentSnapshotViewModel> result = users.Select(x => new TalentSnapshotViewModel()
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
-                    Name = $"{user.FirstName} {user.MiddleName} {user.LastName}",
-                    PhotoId = user.ProfilePhotoUrl,
-                    VideoUrl = user.VideoName,
-                    CVUrl = user.CvName,
-                    Summary = user.Summary,
+                    Name = $"{x.FirstName} {x.MiddleName} {x.LastName}",
+                    PhotoId = x.ProfilePhotoUrl,
+                    VideoUrl = x.VideoName,
+                    CVUrl = x.CvName,
+                    Summary = x.Summary,
                     CurrentEmployment = "",
-                    Visa = user.VisaStatus,
+                    Visa = x.VisaStatus,
                     Level = "",
-                    Skills = new List<string>()
-                };
-
-                user.Skills.ForEach(skill =>
-                {
-                    snapshot.Skills.Add(skill.Skill);
+                    Skills = new List<string>(x.Skills.Select(skill => skill.Skill)),
                 });
+                return result;
+            }
 
-                result.Add(snapshot);
-            });
-
-            return result;
+            return null;
         }
 
         public async Task<IEnumerable<TalentSnapshotViewModel>> GetTalentSnapshotList(IEnumerable<string> ids)
@@ -650,6 +633,56 @@ namespace Talent.Services.Profile.Domain.Services
                 Name = skill.Skill
             };
         }
+
+        protected AddLanguageViewModel ViewModelFromLanguage(UserLanguage language)
+        {
+            return new AddLanguageViewModel
+            {
+                Id = language.Id,
+                Level = language.LanguageLevel,
+                Name = language.Language,
+                CurrentUserId = language.UserId
+            };
+        }
+
+        protected AddEducationViewModel ViewModelFromEducation(UserEducation education)
+        {
+            return new AddEducationViewModel
+            {
+                Id = education.Id,
+                Title = education.Title,
+                InstituteName = education.InstituteName,
+                Country = education.Country,
+                Degree = education.Degree,
+                YearOfGraduation = education.YearOfGraduation
+            };
+        }
+
+        protected AddCertificationViewModel ViewModelFromCertification(UserCertification certification)
+        {
+            return new AddCertificationViewModel
+            {
+                Id = certification.Id,
+                CertificationName = certification.CertificationName,
+                CertificationFrom = certification.CertificationFrom,
+                CertificationYear = certification.CertificationYear
+
+            };
+        }
+
+        protected ExperienceViewModel ViewModelFromExperience(UserExperience experience)
+        {
+            return new ExperienceViewModel
+            {
+                Id = experience.Id,
+                Company = experience.Company,
+                Position = experience.Position,
+                Responsibilities = experience.Responsibilities,
+                Start = experience.Start,
+                End = experience.End
+            };
+        }
+
 
         #endregion
 

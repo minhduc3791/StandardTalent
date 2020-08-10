@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Talent.Common.Models
 {
+    [BsonIgnoreExtraElements]
     public class User : IMongoCommon
     {
         public Guid UId { get; set; }
@@ -18,7 +19,7 @@ namespace Talent.Common.Models
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }
-
+        public string UserType { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string MobilePhone { get; set; }

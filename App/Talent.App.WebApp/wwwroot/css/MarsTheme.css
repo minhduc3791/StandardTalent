@@ -1482,4 +1482,24 @@ div.ReactTags__selected a.ReactTags__remove {
 .full-width > div > div.react-datepicker__input-container input {
     width: 100%;
 }
-/*Experience - End*/
+/*Experience- End*/
+
+/*Talent card - Begin*/
+.feed-wrapper {
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.talent-card-content {
+    min-height: 300px;
+    border-top: 0.5px solid rgba(34, 36, 38, 0.15);
+    border-bottom: 0.5px solid rgba(34, 36, 38, 0.15);
+}
+.talent-card-link {
+    padding: 0 !important;
+    border-bottom: 0.5px solid rgba(34, 36, 38, 0.15);
+}
+.talent-card-link .button{
+    box-shadow: none !important;
+}
+/*Talent card - End*/
