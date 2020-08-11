@@ -80,7 +80,7 @@ namespace Talent.Services.Profile.Controllers
             _userDocumentRepository = userDocumentRepository;
             _recruiterRepository = recruiterRepository;
             _environment = environment;
-            _profileImageFolder = "images\\";
+            _profileImageFolder = "images";
             _awsService = awsService;
         }
 
@@ -247,14 +247,15 @@ namespace Talent.Services.Profile.Controllers
             {
                 IFormFile imageFile = Request.Form.Files[0];
                 string talentId = _userAppContext.CurrentUserId;
+                string rootFolder = _environment.WebRootPath;
 
                 if (string.IsNullOrWhiteSpace(_environment.WebRootPath))
                 {
-                    _environment.WebRootPath = Directory.GetCurrentDirectory();
+                    rootFolder = Directory.GetCurrentDirectory();
                 }
 
-                string fullFilePath = Path.Combine(_environment.WebRootPath, _profileImageFolder);
-
+                string fullFilePath = Path.Combine(rootFolder, _profileImageFolder);
+                
                 if (!Directory.Exists(fullFilePath))
                 {
                     Directory.CreateDirectory(fullFilePath);
