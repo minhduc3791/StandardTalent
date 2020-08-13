@@ -31,6 +31,9 @@ export default class TalentCard extends React.Component {
                             <Icon name="star" size="large"/>
                         </Grid.Column>
                     </Grid.Row>
+                    {
+                        this.toggleViewMode
+                    }
                     {this.state.viewMode ?
                         <Grid.Row className="talent-card-content">
                             <Grid.Column width={14}>
@@ -40,7 +43,7 @@ export default class TalentCard extends React.Component {
                         :
                         <Grid.Row className="talent-card-content">
                             <Grid.Column width={8}>
-                                <img src={photoId} />
+                                <img src={'http://localhost:60290' + photoId} />
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Grid.Row>

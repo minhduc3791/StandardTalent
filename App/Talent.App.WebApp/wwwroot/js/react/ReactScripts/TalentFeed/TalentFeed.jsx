@@ -6,6 +6,7 @@ import { Loader } from 'semantic-ui-react';
 import CompanyProfile from '../TalentFeed/CompanyProfile.jsx';
 import FollowingSuggestion from '../TalentFeed/FollowingSuggestion.jsx';
 import { BodyWrapper, loaderData } from '../Layout/BodyWrapper.jsx';
+import { fetchEmployer, fetchTalentList, test } from '../services/profileServices';
 
 const PAGE_SIZE = 5;
 
@@ -17,8 +18,6 @@ export default class TalentFeed extends React.Component {
         loader.allowedUsers.push("Employer");
         loader.allowedUsers.push("Recruiter");
 
-        //this.feedWrapperRef = React.createRef();
-
         this.state = {
             loadNumber: 5,
             loadPosition: 0,
@@ -26,13 +25,15 @@ export default class TalentFeed extends React.Component {
             watchlist: [],
             loaderData: loader,
             loadingFeedData: false,
-            companyDetails: null
+            employer: null
         }
 
         this.init = this.init.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.loadData = this.loadData.bind(this);
         this.loadTalent = this.loadTalent.bind(this);
+        this.loadEmployer = this.loadEmployer.bind(this);
+        this.logError = this.logError.bind(this);
     };
 
     init() {
@@ -42,55 +43,45 @@ export default class TalentFeed extends React.Component {
     }
 
     componentDidMount() {
-        //this.feedWrapperRef.addEventListener('scroll', this.handleScroll);
         this.loadData();
     }
 
     loadData() {
-        var cookies = Cookies.get('talentAuthToken');
-        $.ajax({
-            url: 'http://localhost:60290/profile/profile/getEmployerProfile',
-            headers: {
-                'Authorization': 'Bearer ' + cookies,
-                'Content-Type': 'application/json'
-            },
-            type: "GET",
-            success: function (res) {
-                this.setState({ companyDetails: res.employer });
-            }.bind(this)
-        })
-
-        //load feed
+        this.loadEmployer();
         this.loadTalent();
+        console.log('?');
+        test().then(data => { console.log(data); })
+            .catch(message => this.logError(message));
         this.init();
     }
 
+    updateEmployer(employer) {
+        this.setState({ employer: employer });
+    }
+
+    updateTalentList(talentList) {
+        this.setState({
+            feedData: [...this.state.feedData, ...talentList],
+            loadingFeedData: false,
+        });
+    }
+
+    loadEmployer() {
+        fetchEmployer()
+            .then(employer => this.updateEmployer(employer))
+            .catch(message => this.logError(message));
+    }
+
     loadTalent() {
-        var cookies = Cookies.get('talentAuthToken');
+        const { loadNumber, loadPosition } = this.state;
         this.setState({ loadingFeedData: true });
-        const feed = {
-            position: this.state.loadPosition,
-            number: this.state.loadNumber,
-        };
+        fetchTalentList({ number: loadNumber, position: loadPosition })
+            .then(talentList => this.updateTalentList(talentList))
+            .catch(message => this.logError(message));
+    }
 
-        let queryString = Object.keys(feed)
-            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(feed[k]))
-            .join('&');
-
-        $.ajax({
-            url: 'http://localhost:60290/profile/profile/getTalent?' + queryString,
-            headers: {
-                'Authorization': 'Bearer ' + cookies,
-                'Content-Type': 'application/json'
-            },
-            type: "GET",
-            success: function (res) {
-                this.setState({
-                    feedData: [...this.state.feedData, ...res.data],
-                    loadingFeedData: false,
-                });
-            }.bind(this)
-        })
+    logError(message) {
+        console.log(message);
     }
 
     handleScroll(e) {
@@ -109,7 +100,7 @@ export default class TalentFeed extends React.Component {
             <BodyWrapper reload={this.init} loaderData={this.state.loaderData}>
                 <div className="ui grid talent-feed container">
                     <div className="four wide column">
-                        <CompanyProfile profile={this.state.companyDetails} />
+                        <CompanyProfile profile={this.state.employer} />
                     </div>
                     <div onScroll={this.handleScroll} className="eight wide column feed-wrapper">
                         {this.state.feedData.map(feed => <TalentCard key={feed.id} {...feed} />)}
