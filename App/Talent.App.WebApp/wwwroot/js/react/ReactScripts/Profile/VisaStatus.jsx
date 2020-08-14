@@ -28,7 +28,7 @@ export default class VisaStatus extends React.Component {
         if (this.props.visaStatus !== prevProps.visaStatus) {
             this.setState({
                 newVisaStatus: this.props.visaStatus,
-                newVisaExpiryDate: moment(this.props.visaExpiryDate),
+                newVisaExpiryDate: this.props.visaExpiryDate ? moment(this.props.visaExpiryDate) : moment(),
             });
         }
     }

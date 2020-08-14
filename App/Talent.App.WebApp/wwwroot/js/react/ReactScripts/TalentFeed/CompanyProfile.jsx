@@ -25,7 +25,6 @@ export default class CompanyProfile extends React.Component {
                         </span>
                     </Card.Meta>
                     <Card.Description>
-                        Matthew is a musician living in Nashville.
                      </Card.Description>
                 </Card.Content>
                 <Card.Content extra>

@@ -148,6 +148,17 @@ export default class AccountProfile extends React.Component {
                                 <form className="ui form">
                                     <div className="ui grid">
                                         <FormItemWrapper
+                                            title='Description'
+                                            tooltip='Write a description of yourself'
+                                        >
+                                            <SelfIntroduction
+                                                summary={this.state.profileData.summary}
+                                                description={this.state.profileData.description}
+                                                updateProfileData={this.updateAndSaveData}
+                                                updateWithoutSave={this.updateWithoutSave}
+                                                />
+                                        </FormItemWrapper>
+                                        <FormItemWrapper
                                             title='Linked Accounts'
                                             tooltip='Linking to online social networks adds credibility to your profile'
                                         >
@@ -213,7 +224,7 @@ export default class AccountProfile extends React.Component {
                                                 updateProfileData={this.updateAndSaveData}
                                             />
                                         </FormItemWrapper>
-                                        <FormItemWrapper
+                                        {/*<FormItemWrapper
                                             title='Education'
                                             tooltip='Add your educational background'
                                         >
@@ -221,8 +232,8 @@ export default class AccountProfile extends React.Component {
                                                 educationData={this.state.profileData.education}
                                                 updateProfileData={this.updateAndSaveData}
                                             />
-                                        </FormItemWrapper>
-                                        <FormItemWrapper
+                                        </FormItemWrapper>*/}
+                                        {/*<FormItemWrapper
                                             title='Certification'
                                             tooltip='List your certificates, honors and awards'
                                         >
@@ -230,7 +241,7 @@ export default class AccountProfile extends React.Component {
                                                 certificateData={this.state.profileData.certifications}
                                                 updateProfileData={this.updateAndSaveData}
                                             />
-                                        </FormItemWrapper>
+                                        </FormItemWrapper>*/}
                                         <FormItemWrapper
                                             title='Visa Status'
                                             tooltip='What is your current Visa/Citizenship status?'
@@ -286,12 +297,7 @@ export default class AccountProfile extends React.Component {
                                                 saveCVUrl={'http://localhost:60290/profile/profile/updateTalentCV'}
                                             />
                                         </FormItemWrapper>
-                                        <SelfIntroduction
-                                            summary={this.state.profileData.summary}
-                                            description={this.state.profileData.description}
-                                            updateProfileData={this.updateAndSaveData}
-                                            updateWithoutSave={this.updateWithoutSave}
-                                            />
+                                        
                                     </div>
                                 </form>
                             </div >

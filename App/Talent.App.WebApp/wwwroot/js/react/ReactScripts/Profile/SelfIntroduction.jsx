@@ -13,8 +13,8 @@ export default class SelfIntroduction extends React.Component {
         this.state = {
             currentSummary: "",
             currentDescription: "",
-            isValidSummary: true,
-            isValidDescription: true,
+            isValidSummary: false,
+            isValidDescription: false,
         };
         this.handleChange = this.handleChange.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
@@ -23,21 +23,28 @@ export default class SelfIntroduction extends React.Component {
     handleChange(name, value) {
         if (name === 'summary') {
             if (value.length > 150) {
-                this.setState({ isValidSummary: false });
+                this.setState({ isValidSummary: true });
             } else {
                 this.setState({
-                    isValidSummary: true,
+                    isValidSummary: false,
                     currentSummary: value,
                 });
             }
         } else if (name === 'description') {
             if (value.length > 600) {
-                this.setState({ isValidDescription: false });
+                this.setState({ isValidDescription: true });
             } else {
-                this.setState({
-                    isValidDescription: true,
-                    currentDescription: value,
-                });
+                if (value.length < 150) {
+                    this.setState({
+                        isValidDescription: true,
+                        currentDescription: value,
+                    });
+                } else {
+                    this.setState({
+                        isValidDescription: false,
+                        currentDescription: value,
+                    });
+                }
             }
         }
     }
@@ -59,22 +66,16 @@ export default class SelfIntroduction extends React.Component {
         let characters = this.props.description ? this.props.description.length : 0;
 
         return (
-            <React.Fragment>
-                <div className="four wide column">
-                    <h3>Description</h3>
-                    <div className="tooltip">Write a description of your company.</div>
+            <div className="ui sixteen wide column">
+                <Input fluid value={this.state.currentSummary} error={this.state.isValidSummary} onChange={(e) => this.handleChange('summary', e.target.value)} placeholder='Please provide a short summary about yourself' />
+                <h5>Summary must be no more than 150 characters.</h5>
+                <div className="field" >
+                    <textarea maxLength={characterLimit} name="Description" placeholder="Please tell us about any hobbies, additional expertise, or anything else you’d like to add."
+                        value={this.state.currentDescription} onChange={(e) => this.handleChange('description', e.target.value)} ></textarea>
                 </div>
-                <div className="ten wide column">
-                    <Input fluid value={this.state.currentSummary} error={this.state.isValidSummary} onChange={(e) => this.handleChange('summary', e.target.value)} placeholder='Please provide a short summary about yourself' />
-                    <h5>Summary must be no more than 150 characters.</h5>
-                    <div className="field" >
-                        <textarea maxLength={characterLimit} name="Description" placeholder="Please tell us about any hobbies, additional expertise, or anything else you’d like to add."
-                            value={this.state.currentDescription} onChange={(e) => this.handleChange('description', e.target.value)} ></textarea>
-                    </div>
-                    <h5>Description must be between 150-600 characters</h5>
-                    <Button type="button" onClick={this.updateProfile} secondary floated="right">Save</Button>
-                </div>
-            </React.Fragment>
+                <h5>Description must be between 150-600 characters</h5>
+                <Button type="button" disabled={this.state.isValidDescription || this.state.isValidSummary} onClick={this.updateProfile} secondary floated="right">Save</Button>
+            </div>
         )
     }
 }

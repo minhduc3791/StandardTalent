@@ -3,6 +3,8 @@ import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types'
 import { Popup, Icon, Card, Segment, Button, Grid, GridColumn } from 'semantic-ui-react'
 
+const DEFAULT_IMAGE = 'http://semantic-ui.com/images/avatar/small/jenny.jpg'
+
 export default class TalentCard extends React.Component {
     constructor(props) {
         super(props);
@@ -31,19 +33,20 @@ export default class TalentCard extends React.Component {
                             <Icon name="star" size="large"/>
                         </Grid.Column>
                     </Grid.Row>
-                    {
-                        this.toggleViewMode
-                    }
                     {this.state.viewMode ?
                         <Grid.Row className="talent-card-content">
-                            <Grid.Column width={14}>
-                                <p>video player</p>
+                            <Grid.Column width={16} className="full-div">
+                                <video width="100%" height="100%" controls>
+                                </video>
                             </Grid.Column>
                         </Grid.Row>
                         :
                         <Grid.Row className="talent-card-content">
-                            <Grid.Column width={8}>
-                                <img src={'http://localhost:60290' + photoId} />
+                            <Grid.Column width={8} className="full-div">
+                                {photoId ?
+                                    <img src={'http://localhost:60290' + photoId} /> :
+                                    <img src={DEFAULT_IMAGE} />
+                                }
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Grid.Row>
@@ -68,9 +71,9 @@ export default class TalentCard extends React.Component {
                         <Grid.Column width={3}>
                             <Button basic icon onClick={this.toggleViewMode}>
                             {this.state.viewMode ?
-                                <Icon name="video" size="large"  />
+                                <Icon name="user" size="large"  />
                                 :
-                                <Icon name="user" size="large"/>
+                                <Icon name="video" size="large"/>
                             }
                             </Button>
                         </Grid.Column>

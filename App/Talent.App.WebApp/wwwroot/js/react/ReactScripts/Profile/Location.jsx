@@ -27,7 +27,8 @@ export class Address extends React.Component {
 
         this.state = {
             showEditSection: false,
-            newAddress: details
+            newAddress: details,
+            invalidPostCode: false,
         }
 
         this.openEdit = this.openEdit.bind(this)
@@ -38,6 +39,11 @@ export class Address extends React.Component {
         this.handleChangeCountry = this.handleChangeCountry.bind(this);
         this.updateAddress = this.updateAddress.bind(this);
         this.saveAddress = this.saveAddress.bind(this);
+        this.isNum = this.isNum.bind(this);
+    }
+
+    isNum(value){
+        return /^\d+$/.test(value);
     }
 
     openEdit() {
@@ -59,7 +65,7 @@ export class Address extends React.Component {
     }
 
     updateAddress({ name, value }) {
-        console.log(name, value);
+
         const data = Object.assign({}, this.state.newAddress)
         data[name] = value;
         this.setState({
@@ -68,10 +74,14 @@ export class Address extends React.Component {
     }
 
     saveAddress() {
-        console.log(this.state.newAddress)
-        const data = Object.assign({}, this.state.newAddress)
-        this.props.saveProfileData('address', data)
-        this.closeEdit()
+        if (this.isNum(this.state.newAddress.postCode)) {
+            this.setState({ invalidPostCode: false });
+            const data = Object.assign({}, this.state.newAddress)
+            this.props.saveProfileData('address', data)
+            this.closeEdit();
+        } else {
+            this.setState({ invalidPostCode: true });
+        }
     }
 
     handleChangeCountry(e, { name, value }) {
@@ -159,6 +169,7 @@ export class Address extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <ChildSingleInput
+                            isError={this.state.invalidPostCode}
                             inputType="text"
                             label="Post Code"
                             name="postCode"
@@ -170,9 +181,12 @@ export class Address extends React.Component {
                         />
                     </Grid.Column>
                 </Grid.Row>
-
-                <button type="button" className="ui teal button" onClick={this.saveAddress}>Save</button>
-                <button type="button" className="ui button" onClick={this.closeEdit}>Cancel</button>
+                <Grid.Row>
+                    <Grid.Column width={16}>
+                        <button type="button" className="ui teal button" onClick={this.saveAddress}>Save</button>
+                        <button type="button" className="ui button" onClick={this.closeEdit}>Cancel</button>
+                    </Grid.Column>
+                </Grid.Row>
             </Grid>
         )
     }

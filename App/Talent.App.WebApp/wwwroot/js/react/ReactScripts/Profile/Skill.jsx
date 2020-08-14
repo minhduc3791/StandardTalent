@@ -25,7 +25,11 @@ export default class Skill extends React.Component {
                 id: "",
                 name: "",
                 level: "",
-            }
+            },
+            invalidSkillName: false,
+            invalidSkillLevel: false,
+            invalidEditSkillName: false,
+            invalidEditSkillLevel: false,
         }
 
         this.toggleAddSkill = this.toggleAddSkill.bind(this);
@@ -75,6 +79,17 @@ export default class Skill extends React.Component {
     }
 
     addSkill() {
+        const { name, level } = this.state.newSkill;
+        if (!name || name.length === 0) {
+            this.setState({ invalidSkillName: true });
+            return;
+        }
+        this.setState({ invalidSkillName: false });
+        if (!level) {
+            this.setState({ invalidSkillLevel: true });
+            return;
+        }
+        this.setState({ invalidSkillLevel: false });
         this.toggleAddSkill();
         const index = this.props.skillData.length;
         this.updateSkill({ name: "id", value: index });
@@ -102,6 +117,18 @@ export default class Skill extends React.Component {
     }
 
     doEditSkill() {
+        const { name, level } = this.state.editSkill;
+        if (!name || name.length === 0) {
+            this.setState({ invalidEditSkillName: true });
+            return;
+        }
+        this.setState({ invalidEditSkillName: false });
+        if (!level) {
+            this.setState({ invalidEditSkillLevel: true });
+            return;
+        }
+        this.setState({ invalidEditSkillLevel: false });
+
         const data = [...this.props.skillData].map(d => {
             if (d.id === this.state.editSkill.id) {
                 return this.state.editSkill;
@@ -120,12 +147,14 @@ export default class Skill extends React.Component {
     }
 
     render() {
+        const { invalidEditSkillLevel, invalidEditSkillName, invalidSkillLevel, invalidSkillName } = this.state;
         return (
             <div className='ui sixteen wide column'>
                 {this.state.showAddSkill &&
                     <Grid className="add-language-header">
-                        <Input placeholder="Add Skill" name="name" value={this.state.newSkill.name} onChange={this.handleChangeName} />
+                        <Input error={invalidSkillName} placeholder="Add Skill" name="name" value={this.state.newSkill.name} onChange={this.handleChangeName} />
                         <Dropdown
+                            error={invalidSkillLevel}
                             className="add-language-dropdown"
                             placeholder='Skill Level'
                             selection
@@ -162,10 +191,11 @@ export default class Skill extends React.Component {
                             {this.state.showEditSkill &&
                                 <Table.Row>
                                     <Table.Cell>
-                                        <Input name="name" value={this.state.editSkill.name} onChange={this.handleEditName} />
+                                        <Input error={invalidEditSkillName} name="name" value={this.state.editSkill.name} onChange={this.handleEditName} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Dropdown
+                                            error={invalidEditSkillLevel}
                                             placeholder='Skill Level'
                                             selection
                                             name="level"

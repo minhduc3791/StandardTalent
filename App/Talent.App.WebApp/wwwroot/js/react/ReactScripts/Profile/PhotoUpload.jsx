@@ -9,6 +9,7 @@ export default class PhotoUpload extends Component {
         this.state = {
             filePath: "",
             file: null,
+            showButton: true,
         };
         this.fileInputRef = React.createRef();
         this.fileChange = this.fileChange.bind(this);
@@ -18,7 +19,8 @@ export default class PhotoUpload extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.imageId !== null && prevProps.imageId !== this.props.imageId) {
             this.setState({
-                filePath: 'http://localhost:60290' + this.props.imageId
+                filePath: 'http://localhost:60290' + this.props.imageId,
+                showButton: false,
             });
         }
     }
@@ -38,6 +40,9 @@ export default class PhotoUpload extends Component {
             contentType: false,
             cache: false,
             success: function (res) {
+                this.setState({
+                    showButton: false,
+                });
                 this.props.updateProfileData('profilePhotoUrl', res.profilePath);
             }.bind(this),
             error: function (res, a, b) {
@@ -53,27 +58,34 @@ export default class PhotoUpload extends Component {
         this.setState({
             filePath: URL.createObjectURL(e.target.files[0]),
             file: e.target.files[0],
+            showButton: true,
         });
     }
 
     render() {
         const { filePath } = this.state;
         return (
-            <div>
-                {(filePath && filePath.length > 0) && <Image onClick={() => this.fileInputRef.current.click()} src={filePath} size='small' circular bordered />}
-                {(!filePath || filePath === "") && <Icon onClick={() => this.fileInputRef.current.click()} name="camera retro" size="huge" circular />}
-                <input
-                    ref={this.fileInputRef}
-                    type="file"
-                    hidden
-                    onChange={this.fileChange}
-                />
-                {this.state.filePath.length > 0 &&
-                    <Button type="button" secondary onClick={this.uploadFile} style={{margin: '20px'}}>
-                        <Icon name="upload" />
-                        Upload
-                    </Button>
-                }
+            <div className='ui sixteen wide column'>
+                <Grid>
+                    <Grid.Row className="photo-wrapper" centered>
+                        {(filePath && filePath.length > 0) && <Image centered onClick={() => this.fileInputRef.current.click()} src={filePath} size='small' circular />}
+                        {(!filePath || filePath === "") && <Icon onClick={() => this.fileInputRef.current.click()} name="camera retro" size="huge" circular />}
+                        <input
+                            ref={this.fileInputRef}
+                            type="file"
+                            hidden
+                            onChange={this.fileChange}
+                        />
+                    </Grid.Row>
+                    <Grid.Row centered>
+                        {this.state.showButton &&
+                            <Button type="button" secondary onClick={this.uploadFile} style={{ margin: '20px' }}>
+                                <Icon name="upload" />
+                                Upload
+                            </Button>
+                        }
+                    </Grid.Row>
+                </Grid>
             </div>
         )
     }

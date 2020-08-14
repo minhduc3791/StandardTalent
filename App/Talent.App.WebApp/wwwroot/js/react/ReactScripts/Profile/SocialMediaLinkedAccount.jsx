@@ -12,7 +12,9 @@ export default class SocialMediaLinkedAccount extends React.Component {
             newLinkedAccount: {
                 linkedIn: "",
                 github: "",
-            }
+            },
+            invalidLinkedIn: false,
+            invalidGithub: false,
         }
 
         this.renderEdit = this.renderEdit.bind(this)
@@ -21,6 +23,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
         this.closeEdit = this.closeEdit.bind(this);
         this.saveLinkedAccount = this.saveLinkedAccount.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.validURL = this.validURL.bind(this);
     }
 
     componentDidMount() {
@@ -39,6 +42,16 @@ export default class SocialMediaLinkedAccount extends React.Component {
         this.setState({ showEditSection: false });
     }
 
+    validURL(str) {
+        let pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        return !!pattern.test(str);
+    }
+
     handleChange(event) {
         const data = Object.assign({}, this.state.newLinkedAccount)
         data[event.target.name] = event.target.value
@@ -48,6 +61,20 @@ export default class SocialMediaLinkedAccount extends React.Component {
     }
 
     saveLinkedAccount() {
+        if (!this.validURL(this.state.newLinkedAccount.linkedIn)) {
+            this.setState({ invalidLinkedIn: true }, () => { console.log(this.state.invalidLinkedIn) });
+            return;
+        }
+
+        if (!this.validURL(this.state.newLinkedAccount.github)) {
+            this.setState({ invalidGithub: true });
+            return;
+        }
+
+        this.setState({
+            invalidLinkedIn: false,
+            invalidGithub: false
+        });
         const data = Object.assign({}, this.state.newLinkedAccount)
         this.props.saveProfileData('linkedAccounts', data)
         this.closeEdit();
@@ -75,6 +102,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
         return (
             <div className='ui sixteen wide column'>
                 <ChildSingleInput
+                    isError={this.state.invalidLinkedIn}
                     inputType="text"
                     label="LinkedIn"
                     name="linkedIn"
@@ -85,6 +113,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
                     errorMessage="Please enter a valid LinkedIn url"
                 />
                 <ChildSingleInput
+                    isError={this.state.invalidGithub}
                     inputType="text"
                     label="GitHub"
                     name="github"

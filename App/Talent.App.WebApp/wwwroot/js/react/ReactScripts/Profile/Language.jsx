@@ -26,7 +26,11 @@ export default class Language extends React.Component {
                 id: "",
                 name: "",
                 level: "",
-            }
+            },
+            invalidLanguage: false,
+            invalidLevel: false,
+            invalidEditLanguage: false,
+            invalidEditLevel: false,
         }
 
         this.toggleAddLanguage = this.toggleAddLanguage.bind(this);
@@ -76,10 +80,22 @@ export default class Language extends React.Component {
     }
 
     addLanguage() {
+        const { name, level } = this.state.newLanguage;
+        if (!name || name.length === 0) {
+            this.setState({ invalidLanguage: true });
+            return;
+        }
+        this.setState({ invalidLanguage: false });
+        if (!level) {
+            this.setState({ invalidLevel: true });
+            return;
+        }
+
         this.toggleAddLanguage();
         const index = this.props.languageData.length;
+        this.setState({ invalidLevel: false });
         this.updateLanguage({ name: "id", value: index });
-        this.props.updateProfileData('languages', [...this.props.languageData, { id: index, name: this.state.newLanguage.name, level: this.state.newLanguage.level }])
+        this.props.updateProfileData('languages', [...this.props.languageData, { id: index, name: name, level: level }])
     }
 
     cancelAddLanguage() {
@@ -103,6 +119,16 @@ export default class Language extends React.Component {
     }
 
     doEditLanguage() {
+        const { name, level } = this.state.editLanguage;
+        if (!name || name.length === 0) {
+            this.setState({ invalidEditLanguage: true });
+            return;
+        }
+        this.setState({ invalidEditLanguage: false });
+        if (!level) {
+            this.setState({ invalidEditLevel: true });
+            return;
+        }
         const data = [...this.props.languageData].map(d => {
             if (d.id === this.state.editLanguage.id) {
                 return this.state.editLanguage;
@@ -111,6 +137,7 @@ export default class Language extends React.Component {
             }
         });
 
+        this.setState({ invalidEditLevel: false });
         this.toggleEditLanguage();
         this.props.updateProfileData('languages', data);
     }
@@ -125,8 +152,9 @@ export default class Language extends React.Component {
             <div className='ui sixteen wide column'>
                 {this.state.showAddLanguage &&
                     <Grid className="add-language-header">
-                        <Input placeholder="Add Language" name="name" value={this.state.newLanguage.name} onChange={this.handleChangeName} />
+                        <Input error={this.state.invalidLanguage} placeholder="Add Language" name="name" value={this.state.newLanguage.name} onChange={this.handleChangeName} />
                         <Dropdown
+                            error={this.state.invalidLevel}
                             className="add-language-dropdown"
                             placeholder='Language Level'
                             selection
@@ -163,10 +191,11 @@ export default class Language extends React.Component {
                             {this.state.showEditLanguage &&
                                 <Table.Row>
                                     <Table.Cell>
-                                        <Input name="name" value={this.state.editLanguage.name} onChange={this.handleEditName} />
+                                        <Input name="name" error={this.state.invalidEditLanguage} value={this.state.editLanguage.name} onChange={this.handleEditName} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Dropdown
+                                            error={this.state.invalidEditLevel}
                                             placeholder='Language Level'
                                             selection
                                             name="level"

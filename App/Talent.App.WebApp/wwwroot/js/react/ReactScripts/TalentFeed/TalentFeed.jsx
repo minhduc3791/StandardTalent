@@ -43,15 +43,13 @@ export default class TalentFeed extends React.Component {
     }
 
     componentDidMount() {
+        window.addEventListener('scroll', this.handleScroll);
         this.loadData();
     }
 
     loadData() {
         this.loadEmployer();
         this.loadTalent();
-        console.log('?');
-        test().then(data => { console.log(data); })
-            .catch(message => this.logError(message));
         this.init();
     }
 
@@ -86,8 +84,8 @@ export default class TalentFeed extends React.Component {
 
     handleScroll(e) {
         const { target } = e;
-
-        if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+        const win = $(window);
+        if ((($(document).height() - win.height()) == Math.round(win.scrollTop())) || ($(document).height() - win.height()) - Math.round(win.scrollTop()) == 1) {
             this.setState(prevState => ({
                 loadNumber: PAGE_SIZE,
                 loadPosition: prevState.loadPosition + PAGE_SIZE,
@@ -102,13 +100,8 @@ export default class TalentFeed extends React.Component {
                     <div className="four wide column">
                         <CompanyProfile profile={this.state.employer} />
                     </div>
-                    <div onScroll={this.handleScroll} className="eight wide column feed-wrapper">
+                    <div onScroll={this.handleScroll} className="eight wide column">
                         {this.state.feedData.map(feed => <TalentCard key={feed.id} {...feed} />)}
-                        {this.state.loadingFeedData &&
-                            <p id="load-more-loading">
-                                <img src="/images/rolling.gif" alt="Loading…" />
-                            </p>
-                        }
                     </div>
                     <div className="four wide column">
                         <div className="ui card">
