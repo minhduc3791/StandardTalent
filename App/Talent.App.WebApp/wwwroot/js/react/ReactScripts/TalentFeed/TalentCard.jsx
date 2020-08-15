@@ -54,7 +54,7 @@ export default class TalentCard extends React.Component {
                                 </Grid.Row>
                                 <Grid.Row>
                                     <label>CURRENT EMPLOYER</label>
-                                    <p>{currentEmployment}</p>
+                                    <p>{(currentEmployment && currentEmployment.company) ? currentEmployment.company : ""}</p>
                                 </Grid.Row>
                                 <Grid.Row>
                                     <label>VISA STATUS</label>
@@ -62,7 +62,7 @@ export default class TalentCard extends React.Component {
                                 </Grid.Row>
                                 <Grid.Row>
                                     <label>POSITION</label>
-                                    <p>{}</p>
+                                    <p>{(currentEmployment && currentEmployment.position) ? currentEmployment.position : ""}</p>
                                 </Grid.Row>
                             </Grid.Column>
                         </Grid.Row>
@@ -93,10 +93,12 @@ export default class TalentCard extends React.Component {
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
-                    <Grid.Row className="">
-                        {skills.map(skill => {
-                            <Button type="button" basic>{skill}</Button>
-                        })}
+                    <Grid.Row>
+                        <Grid.Column width={16}>
+                            {skills.map(skill => 
+                                <Button type="button" color="blue" basic>{skill}</Button>
+                            )}
+                        </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Segment>

@@ -274,7 +274,7 @@ export default class AccountProfile extends React.Component {
                                                 savePhotoUrl='http://localhost:60290/profile/profile/updateProfilePhoto'
                                             />
                                         </FormItemWrapper>
-                                        <FormItemWrapper
+                                        {/*<FormItemWrapper
                                             title='Profile Video'
                                             tooltip='Upload a brief self-introduction video'
                                             hideSegment={true}
@@ -296,8 +296,7 @@ export default class AccountProfile extends React.Component {
                                                 updateProfileData={this.updateWithoutSave}
                                                 saveCVUrl={'http://localhost:60290/profile/profile/updateTalentCV'}
                                             />
-                                        </FormItemWrapper>
-                                        
+                                        </FormItemWrapper>*/}
                                     </div>
                                 </form>
                             </div >

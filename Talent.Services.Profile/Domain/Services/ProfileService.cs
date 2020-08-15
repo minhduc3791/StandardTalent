@@ -553,10 +553,10 @@ namespace Talent.Services.Profile.Domain.Services
                     VideoUrl = x.VideoName,
                     CVUrl = x.CvName,
                     Summary = x.Summary,
-                    CurrentEmployment = "",
+                    CurrentEmployment = ViewModelFromExperience(x.Experience.OrderByDescending(f => f.Start).FirstOrDefault()),
                     Visa = x.VisaStatus,
                     Level = "",
-                    Skills = new List<string>(x.Skills.Select(skill => skill.Skill)),
+                    Skills = x.Skills.Select(skill => skill.Skill).ToList(),
                 });
                 return result;
             }
@@ -672,6 +672,17 @@ namespace Talent.Services.Profile.Domain.Services
 
         protected ExperienceViewModel ViewModelFromExperience(UserExperience experience)
         {
+            if (experience == null) {
+                experience = new UserExperience
+                {
+                    Id = "",
+                    Company = "",
+                    Position = "",
+                    Responsibilities = "",
+                    Start = DateTime.Now,
+                    End = DateTime.Now,
+                };
+            }
             return new ExperienceViewModel
             {
                 Id = experience.Id,

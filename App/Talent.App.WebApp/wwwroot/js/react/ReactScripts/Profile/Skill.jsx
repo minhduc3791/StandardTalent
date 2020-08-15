@@ -141,7 +141,7 @@ export default class Skill extends React.Component {
         this.props.updateProfileData('skills', data);
     }
 
-    deleteSkill() {
+    deleteSkill(id) {
         const data = [...this.props.skillData].filter(d => d.id !== id);
         this.props.updateProfileData('skills', data);
     }
